@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Result</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Background video setup */
+        .background-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            z-index: -1;
+            object-fit: cover;
+            filter: brightness(0.6);
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            display: inline-block;
+            margin-top: 80px;
+        }
+
+        h1, h2, p {
+            color: #fff;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 15px;
+            border: none;
+            background-color: #2196F3;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0b7dda;
+        }
+
+        img {
+            width: 80px;
+            height: 80px;
+        }
+    </style>
+</head>
+<body>
+    <!-- ✅ Reliable background rain video (works in Chrome, Edge, Firefox) -->
+    <video autoplay muted loop playsinline class="background-video">
+        <source src="video/video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="container">
+        <h1>Weather Details</h1>
+        <div id="result"></div>
+        <button onclick="goBack()">Search Again</button>
+    </div>
+
+    <script>
+        function displayWeather() {
+            const data = JSON.parse(localStorage.getItem('weatherData'));
+
+            if (!data) {
+                document.getElementById('result').innerHTML = '<p>No data found. Please go back and search again.</p>';
+                return;
+            }
+
+            const { temp_c, condition, humidity, wind_kph } = data.current;
+            const { name, region, country } = data.location;
+
+            document.getElementById('result').innerHTML = `
+                <h2>Weather in ${name}, ${region}, ${country}</h2>
+                <p>🌡️ Temperature: ${temp_c}&#8451;</p>
+                <p>💧 Humidity: ${humidity}%</p>
+                <p>🌬️ Wind Speed: ${wind_kph} km/h</p>
+                <p>🌈 Condition: ${condition.text}</p>
+                <img src="${condition.icon}" alt="Weather icon">
+            `;
+        }
+
+        function goBack() {
+            localStorage.removeItem('weatherData');
+            window.location.href = 'index.html';
+        }
+
+        displayWeather();
+    </script>
+</body>
+</html>
